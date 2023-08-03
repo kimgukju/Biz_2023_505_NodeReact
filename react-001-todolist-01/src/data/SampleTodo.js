@@ -24,7 +24,7 @@ const SampleData = [
     id: 3,
     sdate: "2023-08-03",
     stime: "10:40:00",
-    content: "내일은 금요일ㅎ",
+    content: "숨쉬기",
     complete: false,
   },
   {
