@@ -1,5 +1,5 @@
 import TodoInput from "./TodoInput";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../css/Todo.css";
 import TodoList from "./TodoList";
 
@@ -37,7 +37,20 @@ const TodoMain = () => {
   // initData() 함수를 실행하여
   // initData() 함수가 생성한(return 한) 객체로 todo 를 초기화
   const [todo, setTodo] = useState(() => initData());
-  const [todoList, setTodoList] = useState([]);
+  const [todoList, setTodoList] = useState(() => {
+    return localStorage.getItem("TODOLIST")
+      ? JSON.parse(localStorage.getItem("TODOLIST"))
+      : [];
+  });
+
+  useEffect(() => {
+    const resetTodo = () => {
+      setTodo(initData());
+      console.log("Use Effect");
+      localStorage.setItem("TODOLIST", JSON.stringify(todoList));
+    };
+    resetTodo();
+  }, [todoList]);
 
   // 입력한 TodoContent 를 사용하여 새로운 Todo 추가하기
   const todoListAdd = (content) => {
@@ -101,7 +114,7 @@ const TodoMain = () => {
       setTodoList(updateTodoList);
     }
     // Add 또는 Update 를 실행 후 Todo 를 초기화 하기
-    setTodo(initData());
+    // setTodo(initData());
   };
 
   return (
