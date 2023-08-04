@@ -2,12 +2,18 @@ import TodoInput from "./TodoInput";
 import { useState } from "react";
 import "../css/Todo.css";
 import TodoList from "./TodoList";
-import { SampleData } from "../data/SampleTodo";
 
-// JS 에서 날짜와 관련된 여러가지 문제를 해결한 plug in
-// Date 라고 하는 날짜와 관련된 객체가 있지만
-// 실무에서는 거의 moment 를 사용한다
-import moment from "moment";
+// initData.js 에서 export 한 함수들 중에서
+// initData() 함수만 필요하니 구조분해를 통하여 import
+import { initData } from "../data/initData";
+// uuid.func()
+// uuid()
+// react-uuid 의 export type 이 무엇일까?
+import uuid from "react-uuid";
+
+// dto.initData()
+// dto.func1()
+// import dto from "../data/initData"
 
 const TodoMain = () => {
   /**
@@ -27,29 +33,27 @@ const TodoMain = () => {
    * 부모 Comps 인 TodoMain 으로 끌어 오르기를 한다
    * 그리고, 자식 Comps 에 전달해주어야 한다
    */
-  const [todo, setTodo] = useState(null);
-  const [content, setContent] = useState("");
+
+  // initData() 함수를 실행하여
+  // initData() 함수가 생성한(return 한) 객체로 todo 를 초기화
+  const [todo, setTodo] = useState(() => initData());
   const [todoList, setTodoList] = useState([]);
 
-  const todoListAdd = (todo) => {
-    const id = todoList[todoList.length - 1]?.id + 1 || 0;
-    const addTodo = {
-      id: id,
-      sdate: moment().format("YYYY[-]MM[-]DD"),
-      stime: moment().format("HH:mm:ss"),
-      content: todo,
-      complete: false,
-    };
-    setTodoList([...todoList, addTodo]);
+  // 입력한 TodoContent 를 사용하여 새로운 Todo 추가하기
+  const todoListAdd = (content) => {
+    const newTodo = { ...todo, id: uuid(), content: content };
+    setTodoList([...todoList, newTodo]);
   };
 
+  // Todo 완료처리
   const itemComplete = (id) => {
-    // 완료처리 예정
-    const compTodoList = todoList.map((todo) => {
-      if (todo.id === id) {
-        return { ...todo, complete: !todo.complete };
+    const compTodoList = todoList.map((item) => {
+      if (item.id === id) {
+        // todo.complete 속성을 반전(NOT) 시키기
+        // true 이면 false, false 이면 true
+        return { ...item, complete: !item.complete };
       }
-      return todo;
+      return item;
     });
     setTodoList([...compTodoList]);
   };
@@ -60,8 +64,8 @@ const TodoMain = () => {
       // list 를 forEach 하면서 item 의 id 와 일치하는 데이터가 있으면
       // 해당 데이터를 제외하면서 새로운 리스트 만들기
       // 전달받은 ID 와 일치하지 않은 item 만 모아서 새로운 배열 만들기
-      const deleteTodoList = todoList.filter((todo) => {
-        return todo.id !== id;
+      const deleteTodoList = todoList.filter((item) => {
+        return item.id !== id;
       });
       setTodoList([...deleteTodoList]);
     }
@@ -69,38 +73,40 @@ const TodoMain = () => {
 
   // Content 를 클릭했을때 선택된 item 을 찾아주는 함수
   const updateItemSelect = (id) => {
-    const selectTodoList = todoList.filter((todo) => {
-      return todo.id === id;
+    // 전달받은 id 값은 PK 적인 성질을 가지므로
+    // id 에 해당하는 List 만 추출하면 그결과는 item 이
+    // 한개인 List 가 생성된다
+    const selectTodoList = todoList.filter((item) => {
+      return item.id === id;
     });
-    setContent(selectTodoList[0].content);
-    // update 를 위한 임시 데이터 저장
+    // update 를 위한 Todo 데이터 저장
     setTodo({ ...selectTodoList[0] });
   };
 
-  // 내용을 변경하고 저장을 클릭했을때 내용을 변경하는 함수
-  const updateItemOK = (text) => {
-    if (todo) {
-      const updateTodo = { ...todo, content: text };
+  // 내용을 변경하고 저장을 클릭했을때
+  // Update and Insert 를 실행하는 함수
+  const todoInput = (content) => {
+    // id 값이 null 또는 "" 이면 List 에 추가하기
+    if (!todo.id) {
+      todoListAdd(content);
+      // id 값이 null 또는 "" 이 아니면 Update 실행
+    } else {
       const updateTodoList = todoList.map((item) => {
         if (item.id === todo.id) {
-          return updateTodo;
+          return { ...item, content: content };
         }
         return item;
       });
+      // setState 함수
       setTodoList(updateTodoList);
-      setTodo(null);
-    } else {
-      todoListAdd(text);
     }
+    // Add 또는 Update 를 실행 후 Todo 를 초기화 하기
+    setTodo(initData());
   };
 
   return (
     <div className="todo">
-      <TodoInput
-        content={content}
-        setContent={setContent}
-        todoListAdd={updateItemOK}
-      />
+      <TodoInput todo={todo} setTodo={setTodo} todoInput={todoInput} />
       <TodoList
         itemDelete={itemDelete}
         todoList={todoList}
