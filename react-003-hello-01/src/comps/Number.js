@@ -20,13 +20,13 @@ const Number = () => {
         덧셈 : {num1} + {num2} =
       </div>
       <div>
-        뺄셈 : {num2} - {num1} ={" "}
+        뺄셈 : {num2} - {num1} ={num2 - num1}
       </div>
       <div>
-        곱셈 : {num1} x {num2} = {}{" "}
+        곱셈 : {num1} x {num2} = {num1 * num2}
       </div>
       <div>
-        나눗셈 : {num2} / {num1} ={" "}
+        나눗셈 : {num2} / {num1} ={num2 / num1}
       </div>
     </>
   );
