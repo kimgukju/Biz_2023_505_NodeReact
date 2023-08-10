@@ -61,11 +61,13 @@ router.post("/insert", uploadMiddleWare.array("b_images"), async (req, res) => {
   // 관련 정보를 req.file 객체에 담아준다
   const files = req.files;
   const bbsDto = JSON.parse(body.bbs);
-  console.log("body", files, bbsDto);
+  // console.log("body", files, bbsDto);
 
   // files 이미지들 중에서 대표이미지는 첫번째 이미지 이다
-  bbsDto.b_image = files[0].filename;
-  bbsDto.b_origin_name = files[0].originalname;
+
+  bbsDto.b_image = files[0]?.filename;
+  bbsDto.b_origin_name = files[0]?.originalname;
+
   const result = await BBS.create(bbsDto);
 
   // 이미지 정보 생성 : 대표이미지를 제외한 나머지만
@@ -78,6 +80,13 @@ router.post("/insert", uploadMiddleWare.array("b_images"), async (req, res) => {
     await FILES.create(fileDto);
   }
   res.send("OK");
+});
+
+router.get("/list", async (req, res) => {
+  const bbsList = await BBS.findAll();
+  return res.json(bbsList);
+  console.table(bbsList);
+  return bbsList;
 });
 
 export default router;
