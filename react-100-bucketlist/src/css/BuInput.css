@@ -1,0 +1,25 @@
+table {
+  display: flex;
+}
+div.list {
+  width: 50%;
+  border: 1px solid red;
+}
+
+div.list input {
+  margin: 10px;
+  width: 20%;
+}
+
+div.input {
+  width: 50%;
+  align-items: center;
+  border: 1px solid blue;
+}
+
+div.input input,
+div.input textarea {
+  margin: 10px;
+  width: 40%;
+  display: block;
+}
