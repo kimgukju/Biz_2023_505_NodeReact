@@ -1,6 +1,7 @@
-const BBsItem = ({ item }) => {
+const BBsItem = ({ item, seq }) => {
   return (
     <tr>
+      <td>{seq + 1}</td>
       <td>{item.id}</td>
       <td>{item.bDate}</td>
       <td>{item.bSubject}</td>
