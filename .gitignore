@@ -61,3 +61,6 @@ typings/
 .env
 .metadata/
 RemoteSystemsTempFiles/
+
+# mySec File
+FirebaseConfig.js
