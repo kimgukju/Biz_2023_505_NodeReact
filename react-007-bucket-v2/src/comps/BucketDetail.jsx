@@ -1,9 +1,4 @@
-import {
-  Form,
-  useLoaderData,
-  redirect,
-  Navigate,
-} from "react-router-dom";
+import { Form, useLoaderData, redirect, Navigate } from "react-router-dom";
 import dImage from "../assets/default.png";
 import Button from "../shareComps/Button";
 import css from "./BucketDetail.module.scss";
@@ -11,7 +6,7 @@ import {
   deleteBucket,
   getBucket,
   saveBucket,
-} from "../modules/bucketFech";
+} from "../modules/firebaseDBProvier";
 
 export const detailLoader = async ({ params }) => {
   // const id = params.id
@@ -69,7 +64,7 @@ const BucketDetail = () => {
         <img
           src={bucket?.img_src || dImage}
           alt={bucket?.bucket}
-          width="100px"
+          width="200px"
         />
       </div>
       <div className={css.last}>
